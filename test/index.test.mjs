@@ -1,8 +1,8 @@
-import torrent2magnet from "./index";
+import torrent2magnet from "../index";
 import fs from "fs";
 import { Buffer } from "buffer";
 
-const torrent_file = fs.readFileSync("./ubuntu.torrent");
+const torrent_file = fs.readFileSync("./test/ubuntu.torrent");
 const torrent_file_buffer = Buffer.from(torrent_file);
 
 test("test local ubuntu torrent", () => {

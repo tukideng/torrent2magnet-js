@@ -1,6 +1,6 @@
 name: Test job
 on:
-  push:
+  pull_request:
     branches:
       - "master"
     paths-ignore:
