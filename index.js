@@ -1,8 +1,8 @@
 import bencode from "bencode";
 import js_sha1 from "js-sha1";
 
-function response(infohash = "", magnet_uri = "", dn = "", xl = 0, tracker_list = [], success = false) {
-  return { infohash, magnet_uri, dn, xl, tracker_list, success };
+function response(success = false, infohash = "", magnet_uri = "", dn = "", xl = 0, main_tracker = "", tracker_list = [], is_private = false, files = []) {
+  return { success, infohash, magnet_uri, dn, xl, main_tracker, tracker_list, is_private, files };
 }
 
 function torrent2magnet(buffer_content) {
@@ -14,16 +14,24 @@ function torrent2magnet(buffer_content) {
   // decode torrent file
   const torrent = bencode.decode(buffer_content);
 
+  if (!torrent.info) {
+    console.error("invalid torrent file");
+    return response();
+  }
+
   // exact topic (xt) is a URN containing the content hash of the torrent file
   const infohash = js_sha1(bencode.encode(torrent.info)).toUpperCase();
 
   const decoder = new TextDecoder("utf-8");
 
   // name of torrent file (dn)
-  const dn = decoder.decode(torrent.info.name) || "";
+  const dn = torrent.info.name ? decoder.decode(torrent.info.name) : "";
 
   // length of torrent file (xl)
   const xl = torrent.info.length || 0;
+
+  // main tracker (tr)
+  const main_tracker = torrent.announce ? decoder.decode(torrent.announce) : "";
 
   // url of trackers (tr)
   let tracker_list = [];
@@ -36,9 +44,27 @@ function torrent2magnet(buffer_content) {
   }
   const tr = tracker_list.join("&tr=") || "";
 
+  // if torrent has multiple files, info contains files with their length and path
+  const files = [];
+  if (torrent.info.files && torrent.info.files.length > 0) {
+    for (let i = 0; i < torrent.info.files.length; i++) {
+      let path = "";
+      // if the torrent file has folders inside, the path is an array of strings, so we need to join the paths with "/"
+      for (let j = 0; j < torrent.info.files[i].path.length; j++) {
+        path += `${j > 0 ? "/" : ""}` + decoder.decode(torrent.info.files[i].path[j]);
+      }
+      const length = torrent.info.files[i].length || 0;
+      files.push({ path, length });
+    }
+  }
+
+  // magnet uri, so far we have: xt, dn, xl, tr
   const magnet_uri = `magnet:?xt=urn:btih:${infohash}${dn ? `&dn=${dn}` : ""}${`&xl=${xl}`}${tr ? `&tr=${tr}` : ""}`;
 
-  return response(infohash, magnet_uri, dn, xl, tracker_list, true);
+  // is torrent private (private), 1 = true, 0 = false. If private, only the main tracker can be used
+  const is_private = torrent.info.private === 1 ? true : false;
+
+  return response(true, infohash, magnet_uri, dn, xl, main_tracker, tracker_list, is_private, files);
 }
 
 export default torrent2magnet;

@@ -13,6 +13,20 @@ Install via
 
 ## Usage
 
+need a torrent file buffer as input, and return a object with the following parameters
+
+| Params       | description                                                                                                                                                     | Example                                                                                                                                                                                           |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| success      | Whether the result was parsed successfully                                                                                                                      | true/false                                                                                                                                                                                        |
+| infohash     | calculated over the contents of the info dictionary in [bencode](https://en.wikipedia.org/wiki/Bencode) form                                                    | URN：9ECD4676FD0F0474151A4B74A5958F42639CEBDF                                                                                                                                                     |
+| magnet_uri   | It consists of a set of parameters, the most commonly used parameter is xt, which is usually a URN formed by the content hash function value of a specific file | magnet:?xt=urn:btih:9ECD4676FD0F0474151A4B74A5958F42639CEBDF&dn=ubuntu-23.10.1-desktop-amd64.iso&xl=5173995520&tr=https://torrent.ubuntu.com/announce&tr=https://ipv6.torrent.ubuntu.com/announce |
+| dn           | The name or folder name of the resource                                                                                                                         | ubuntu-23.10.1-desktop-amd64.iso                                                                                                                                                                  |
+| xl           | The size of the file in bytes                                                                                                                                   | 5173995520                                                                                                                                                                                        |
+| main_tracker | main tracker. The first element of tracker_list                                                                                                                 | 'https://torrent.ubuntu.com/announce'                                                                                                                                                             |
+| tracker_list | a list of tracker url                                                                                                                                           | ['https://torrent.ubuntu.com/announce', 'https://ipv6.torrent.ubuntu.com/announce']                                                                                                               |
+| is_private   | is torrent private                                                                                                                                              | True/false                                                                                                                                                                                        |
+| files        | If the torrent file contains multiple files, this parameter returns the path and file size information of all files.                                            | [{path: 'my-torrent', length: 124945}]                                                                                                                                                            |
+
 ### use in node
 
 ```js
@@ -23,7 +37,7 @@ import { Buffer } from "buffer";
 const torrent_file = fs.readFileSync("./ubuntu.torrent");
 const torrent_file_buffer = Buffer.from(torrent_file);
 
-const { infohash, magnet_uri, dn, xl, tracker_list, success } = torrent2magnet(torrent_file_buffer);
+const { success, infohash, magnet_uri, dn, xl, main_tracker, tracker_list, is_private, files } = torrent2magnet(torrent_file_buffer);
 
 // success is a boolean value, if success is true, then the following values are valid
 if (success) {
@@ -48,7 +62,7 @@ import torrent2magnet from "torrent2magnet-js";
     reader.onload = (file: any) => {
       // bencode need Buffer as input, but Buffer is not exist in native library, so we need to import it and set it as global variable in [polyfills.ts]
       const buffer_content = Buffer.from(file.target.result);
-      const { infohash, magnet_uri, dn, xl, tracker_list, success } = torrent2magnet(buffer_content);
+      const { success, infohash, magnet_uri, dn, xl, main_tracker, tracker_list, is_private, files } = torrent2magnet(buffer_content);
       if (success) {
         //...
       }
