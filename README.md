@@ -34,7 +34,7 @@ if (success) {
 ### use in Angular
 
 ```html
-<input type="file" id="upload-btn" style="display: none" accept=".torrent" (change)="uploadTorrent($event)" />
+<input type="file" accept=".torrent" (change)="uploadTorrent($event)" />
 ```
 
 ```ts
