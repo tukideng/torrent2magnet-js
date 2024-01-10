@@ -27,8 +27,6 @@ need a torrent file buffer as input, and return a object with the following para
 | is_private   | is torrent private                                                                                                                                              | True/false                                                                                                                                                                                        |
 | files        | If the torrent file contains multiple files, this parameter returns the path and file size information of all files.                                            | [{path: 'my-torrent', length: 124945}]                                                                                                                                                            |
 
-                                                                                                                                                        |
-
 ### use in node
 
 ```js
