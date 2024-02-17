@@ -1,5 +1,5 @@
 declare function torrent2magnet(buffer: Buffer): {
-  suceess: boolean;
+  success: boolean;
   infohash: string;
   magnet_uri: string;
   dn: string;
