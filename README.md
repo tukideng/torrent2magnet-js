@@ -11,6 +11,10 @@ Takes a buffer of torrent file and returns it's xt, dn, magneturi and more detai
 Install via
 `npm install torrent2magnet-js`
 
+## Demo
+
+[torrent2magnet](https://t2m.tuki.moe/)
+
 ## Usage
 
 Use a torrent file buffer as input, and return an object with the following properties:
