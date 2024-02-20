@@ -13,7 +13,7 @@ Install via
 
 ## Demo
 
-[torrent2magnet](https://t2m.tuki.moe/)
+[https://t2m.tuki.moe/](https://t2m.tuki.moe/)
 
 ## Usage
 
