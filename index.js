@@ -6,8 +6,8 @@ function response(success = false, infohash = "", magnet_uri = "", dn = "", xl =
 }
 
 function torrent2magnet(buffer_content) {
-  if (!buffer_content || buffer_content instanceof Buffer === false) {
-    console.error("input is not a buffer");
+  if (!buffer_content || buffer_content instanceof Uint8Array === false) {
+    console.error("input is not a Uint8Array");
     return response();
   }
 

@@ -36,10 +36,9 @@ Use a torrent file buffer as input, and return an object with the following prop
 ```js
 import torrent2magnet from "torrent2magnet-js";
 import fs from "fs";
-import { Buffer } from "buffer";
 
 const torrent_file = fs.readFileSync("./ubuntu.torrent");
-const torrent_file_buffer = Buffer.from(torrent_file);
+const torrent_file_buffer = new Uint8Array(torrent_file); // Buffer.from(torrent_file);
 
 const { success, infohash, magnet_uri, dn, xl, main_tracker, tracker_list, is_private, files } = torrent2magnet(torrent_file_buffer);
 
@@ -64,20 +63,13 @@ import torrent2magnet from "torrent2magnet-js";
     // bencode.decode need ArrayBuffer as input, so we need to use readAsArrayBuffer
     reader.readAsArrayBuffer(file);
     reader.onload = (file: any) => {
-      // bencode need Buffer as input, but Buffer is not exist in native library, so we need to import it and set it as global variable in [polyfills.ts]
-      const buffer_content = Buffer.from(file.target.result);
+      const buffer_content = new Uint8Array(file.target.result);
       const { success, infohash, magnet_uri, dn, xl, main_tracker, tracker_list, is_private, files } = torrent2magnet(buffer_content);
       if (success) {
         //...
       }
     };
 };
-```
-
-```ts
-// polyfills.ts
-import * as buffer from "buffer";
-(window as any).Buffer = buffer.Buffer;
 ```
 
 ## License

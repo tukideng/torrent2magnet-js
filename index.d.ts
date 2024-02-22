@@ -1,4 +1,4 @@
-declare function torrent2magnet(buffer: Buffer): {
+declare function torrent2magnet(buffer: Uint8Array): {
   success: boolean;
   infohash: string;
   magnet_uri: string;
