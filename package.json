@@ -20,7 +20,9 @@
   },
   "dependencies": {
     "bencode": "^4.0.0",
-    "jest": "^29.7.0",
     "js-sha1": "^0.6.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }
